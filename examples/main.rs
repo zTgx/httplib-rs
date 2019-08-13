@@ -1,3 +1,6 @@
+extern crate httplib;
+use httplib::*;
+
 fn main() {
-    println!("Hello, world!");
+    let client = Client::new("baidu.com", 443, 3200);
 }
