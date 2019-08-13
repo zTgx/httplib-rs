@@ -1,0 +1,19 @@
+
+[package]
+name = "httplib"
+version = "0.1.0"
+authors = ["zTgx <747674262@qq.com>"]
+edition = "2018"
+repository = "https://github.com/httplib-rs.git"
+readme = "README.md"
+keywords = [ "HTTP", "HTTPS", "server", "client" ]
+categories = [ "api-bindings" ]
+license = "MIT/Apache-2.0"
+exclude = [ "/.travis.yml" ]
+description = "httplib is a wrapper around cpp-httplib."
+build = "build.rs"
+
+[dependencies]
+
+[build-dependencies]
+cc = ">= 1.0.28"
