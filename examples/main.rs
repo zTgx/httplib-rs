@@ -2,5 +2,5 @@ extern crate httplib;
 use httplib::*;
 
 fn main() {
-    let client = Client::new("baidu.com", 443, 3200);
+    let _client = Client::new("baidu.com".to_string(), 443, 3200);
 }

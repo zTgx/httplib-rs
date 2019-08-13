@@ -10,6 +10,7 @@
 extern crate cc;
 
 use std::env;
+use std::env::consts::OS;
 
 fn main() {
     // Check whether we can use 64-bit compilation
@@ -27,10 +28,23 @@ fn main() {
     };
 
     // Actual build cpp-httplib
-    cc::Build::new()
-        .file("depend/httplib.cc")
-        .cpp(true)
-        .flag("-std=c++11")
-        .cpp_link_stdlib("stdc++")
-        .compile("libhttp.a");
+    match OS {
+        "macos" => {
+            cc::Build::new()
+                .file("depend/httplib.cc")
+                .cpp(true)
+                .flag("-std=c++11")
+                .cpp_link_stdlib("c++")
+                .compile("libhttp.a");
+        },
+
+        _ => {
+            cc::Build::new()
+                .file("depend/httplib.cc")
+                .cpp(true)
+                .flag("-std=c++11")
+                .cpp_link_stdlib("stdc++")
+                .compile("libhttp.a");
+        }
+    }
 }

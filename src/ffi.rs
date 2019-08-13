@@ -4,6 +4,7 @@
 
 //    println!("name: {:?}", unsafe { CStr::from_ptr(name) } );
 
+/// Client
 #[repr(C)]
 pub struct Client {
     pub host: *const libc::c_char,
@@ -22,5 +23,9 @@ impl Client {
 }
 
 extern "C" {
-    pub fn create_client(host: *const libc::c_char, port: libc::c_int, time_t: libc::time_t) -> Client;
+    pub fn make_client(host: *const libc::c_char, port: libc::c_int, time_t: libc::time_t) -> Client;
 }
+
+///Response
+#[repr(C)]
+pub struct Response {}
