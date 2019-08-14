@@ -10,7 +10,7 @@
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 #endif
 
-#define DEFARG(name, defval) ((#name[0]) ? (name + 0) : defval)  
+#define DEFARG(name, defval) ((#name[0]) ? (name + 0) : defval)
 
 //Server
 extern "C" {
@@ -24,6 +24,17 @@ extern "C" {
     bool listen_with(Server* s, const char *host, int port, int socket_flags) {
         return s->listen(host, port, socket_flags);
     }
+
+    bool valid(Server* s) {
+        return s->is_valid();
+    }
+
+    Server& get(Server* s, const char *pattern, Server::Handler handler) {
+        std::cout << "pattern: " << pattern << std::endl;
+        // std::cout << "handler: " << handler;
+        return s->Get(pattern, handler);
+    }
+
 }
 
 //Client
