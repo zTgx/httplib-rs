@@ -38,22 +38,3 @@ extern "C" {
 
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//test
-#[repr(C)]
-pub struct Test {
-    pub x: libc::c_int,
-}
-impl Test {
-    pub fn new() -> Self {
-        Test {
-            x: 55,
-        }
-    }
-}
-
-extern "C" {
-    pub fn make_test() -> *mut Test;
-    pub fn make_get(i: libc::c_int, j: libc::c_int) -> libc::c_int;
-    pub fn make_get_char(t: *mut Test, c: *const libc::c_char) -> *const libc::c_char;
-}

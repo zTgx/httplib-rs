@@ -65,22 +65,3 @@ impl Client {
 
 
 
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Test
-use crate::ffi::{make_test, make_get_char};
-pub struct Test {
-    pub t: *mut ffi::Test
-}
-
-impl Test {
-    pub fn new() -> Self {
-        Test {
-            t: unsafe{ make_test() }
-        }
-    }
-
-    pub fn get(&mut self) -> &str {
-        unsafe{ CStr::from_ptr( make_get_char( self.t, "".as_ptr() as *const i8) ).to_str().unwrap() }
-    }
-}
