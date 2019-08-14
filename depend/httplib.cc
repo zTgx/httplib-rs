@@ -1,5 +1,7 @@
 #include "cpp-httplib/httplib.h"
-#include <memory>
+#include <iostream>
+
+#include <ctime> //time_t
 
 #if defined(__clang__)
 #pragma clang diagnostic push
@@ -9,9 +11,30 @@
 #endif
 
 extern "C" {
-    std::shared_ptr<httplib::Client> make_client(const char * host, int port = 80, time_t timeout_sec = 300) {
-        std::shared_ptr<httplib::Client> client = std::make_shared<httplib::Client>( host, port, timeout_sec );
-        return client;
+
+    typedef httplib::Client Client;
+    typedef httplib::Response Response;
+
+    Client* make_client_with_host(const char* host) {
+        Client *c = new Client(host);
+        return c;
+    }
+
+    Client* make_client_with_host_port(const char* host, int port) {
+        Client *c = new Client(host, port);
+        return c;
+    }
+
+    Client* make_client_with_host_port_timeout(const char* host, int port, time_t timeout_sec) {
+        Client *c = new Client(host, port, timeout_sec);
+        return c;
+    }
+
+    const char* get_with_path(Client* client, const char* path) {
+        std::shared_ptr<Response> res = client->Get(path);
+        std::cout << "body : " << res->body << std::endl;
+
+        return res->body.c_str();
     }
 }
 

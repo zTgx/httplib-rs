@@ -40,6 +40,7 @@ fn main() {
 
         _ => {
             cc::Build::new()
+                .file("depend/test/test.cc")
                 .file("depend/httplib.cc")
                 .cpp(true)
                 .flag("-std=c++11")
