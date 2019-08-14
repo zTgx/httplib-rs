@@ -10,8 +10,24 @@
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 #endif
 
-extern "C" {
+#define DEFARG(name, defval) ((#name[0]) ? (name + 0) : defval)  
 
+//Server
+extern "C" {
+    typedef httplib::Server Server;
+
+    Server* make_server() {
+        Server* s = new Server();
+        return s;
+    }
+
+    bool listen_with(Server* s, const char *host, int port, int socket_flags) {
+        return s->listen(host, port, socket_flags);
+    }
+}
+
+//Client
+extern "C" {
     typedef httplib::Client Client;
     typedef httplib::Response Response;
 

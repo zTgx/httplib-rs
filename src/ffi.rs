@@ -1,3 +1,24 @@
+///Server
+#[repr(C)]
+pub struct Server {
+    pub dummy: bool,
+}
+impl Server{
+    pub fn new() -> Self {
+        Server {
+            dummy: false,
+        }
+    }
+}
+extern "C" {
+    //constructor
+    pub fn make_server() -> *mut Server;
+
+    //method
+    pub fn listen_with(s: *mut Server, host: *const libc::c_char, port: libc::c_int, socket_flags: libc::c_int) -> bool;
+}
+
+
 /// Client
 #[repr(C)]
 pub struct Client {
