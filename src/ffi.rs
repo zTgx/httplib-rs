@@ -6,7 +6,6 @@ pub struct Client {
     pub time_t: libc::time_t,
 }
 impl Client {
-    /// Create a new (zeroed) public key usable for the FFI interface
     pub fn new(host: *const libc::c_char, port: libc::c_int, time_t: libc::time_t) -> Client {
         Client {
             host: host,
