@@ -7,8 +7,8 @@ pub mod ffi;
 pub mod traits;
 
 //Test
-use crate::ffi::{
-    make_test, get_test,
+pub use crate::ffi::{
+    make_test, test_get, register_callback,
 };
 
 //Client
@@ -18,7 +18,7 @@ use crate::ffi::{
 
 //Server
 use crate::ffi::{
-    make_server, listen_with, get,
+    make_server, listen_with, getx, register_server_callback,
 };
 pub use traits::{Handler};
 
@@ -45,12 +45,13 @@ impl Server {
         }
     }
 
-    pub fn listen(&mut self, host: String, port: isize, socket_flags: i32) -> bool {
+    pub fn listen(&mut self, host: &String, port: i32, socket_flags: i32) -> bool {
         unsafe {
             listen_with(self.s, host.as_ptr() as *const i8, port as libc::c_int, socket_flags)
         }
     }
-
+    
+    /*
     pub fn get (&mut self, regex: String, cb: Box<unsafe extern "C" fn(*mut ffi::Request, *mut ffi::Response)>)
     {
         unsafe {
@@ -59,8 +60,31 @@ impl Server {
             let _s = get(self.s, regex.as_ptr() as *const i8, x as *mut Handler);
         }
     }
-}
+    */
 
+    pub fn get(&mut self, path: String, cb: extern fn(*const ffi::Request, *mut ffi::Response)) {
+             unsafe {
+                 ffi::getx(self.s, path.as_ptr() as *const i8,  cb);
+                 //ffi::get(self.s, path.as_ptr() as *const i8, Server::do_thing_wrapper::<F>);
+             }
+         }
+        /* 
+         pub extern fn do_thing_wrapper<F>(closure: *mut c_void, req: Request, res: Response)
+         where F: Fn(Request, Response) {
+            let opt_closure = closure as *mut Option<F>;
+              unsafe {
+                  return (*opt_closure).take().unwrap()(req, res);
+              }
+          }
+          */
+
+    pub fn get_t(&mut self, cb: extern fn(i32)) {
+        unsafe {
+            ffi::ttt(self.s,  cb );
+            //ffi::register_server_callback(self.s,  cb );
+        }
+    }
+}
 
 //Client
 pub struct Client {
@@ -70,24 +94,24 @@ pub struct Client {
 impl Client {
     pub fn with_host(host: String) -> Self {
         Client {
-            c: unsafe {
-                make_client_with_host( host.as_ptr() as *const i8)
-            },
+c: unsafe {
+       make_client_with_host( host.as_ptr() as *const i8)
+   },
         }
     }
 
     pub fn with_host_port(host: String, port: isize) -> Self {
         Client {
-            c: unsafe {
-                make_client_with_host_port( host.as_ptr() as *const i8, port as libc::c_int)
-            },
+c: unsafe {
+       make_client_with_host_port( host.as_ptr() as *const i8, port as libc::c_int)
+   },
         }
     }
 
     pub fn with_host_port_timeout(host: String, port: isize, time_t: i64) -> Self {
         Client {
-            c: unsafe {
-                make_client_with_host_port_timeout( host.as_ptr() as *const i8, port as libc::c_int, time_t as libc::time_t )
+c: unsafe {
+       make_client_with_host_port_timeout( host.as_ptr() as *const i8, port as libc::c_int, time_t as libc::time_t )
             },
         }
     }
@@ -130,23 +154,12 @@ impl Test {
         }
     }
 
-    // pub fn get<F> (&mut self, path: i32, f: F)
-    // where F: Fn(i32) {
-    //     let user_data = &f as *const _ as *mut c_void;
-    //     unsafe {
-    //         ffi::get_test(self.t, path as *const libc::c_int, do_thing_wrapper::<F>);
-    //     }
-    // }
-    //
-    // // Shim interface function
-    // pub extern fn do_thing_wrapper<F>(closure: *mut c_void, a: *const libc::c_int)
-    // where F: Fn(i32) {
-    //     let opt_closure = closure as *mut Option<F>;
-    //     unsafe {
-    //         let _res = (*opt_closure).take().unwrap()(a as i32);
-    //         // return res as c_int;
-    //     }
-    // }
+    pub fn get (&mut self, path: i32, cb: extern fn(i32, ffi::RT)) {
+        unsafe {
+            ffi::test_get(self.t, path as *const libc::c_int, Box::new( cb ));
+        }
+
+    }
 }
 
 

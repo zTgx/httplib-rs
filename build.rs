@@ -45,6 +45,7 @@ fn main() {
                 .file("depend/httplib.cc")
                 .cpp(true)
                 .flag("-std=c++11")
+                .flag("-pthread")
                 .cpp_link_stdlib("stdc++")
                 .compile("libhttp.a");
         }

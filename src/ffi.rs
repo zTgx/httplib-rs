@@ -92,13 +92,19 @@ impl Server{
         }
     }
 }
+
+#[link(name = "http")]
 extern "C" {
     //constructor
     pub fn make_server() -> *mut Server;
 
     //method
     pub fn listen_with(s: *mut Server, host: *const libc::c_char, port: libc::c_int, socket_flags: libc::c_int) -> bool;
-    pub fn get(s: *mut Server, reg: *const libc::c_char, handler: *mut Handler) -> *mut Server;
+    pub fn getx(s: *mut Server, reg: *const libc::c_char, cb: extern fn(*const Request, *mut Response) );
+
+    pub fn ttt(s: *mut Server, cb: extern fn(x: i32));
+
+    pub fn register_server_callback(s: *mut Server, cb: extern fn(x: i32));
 }
 
 
@@ -140,6 +146,18 @@ extern "C" {
 
 //////////////
 #[repr(C)]
+pub struct RustObject {
+    pub a: i32,
+        // 其他成员……
+        }
+
+
+#[repr(C)]
+pub struct RT {
+    pub x: libc::c_int,
+}
+
+#[repr(C)]
 pub struct Test {
     pub dummy: bool,
 }
@@ -151,38 +169,22 @@ impl Test {
     }
 }
 
-#[repr(C)]
-pub struct Tmp {
-    pub callback: extern "C" fn(i: i32),
-}
-
-#[no_mangle]
-pub extern "C" fn set_callback(callback: extern "C" fn(i: i32)) -> *mut Tmp {
-    let mut tmp = Box::new(Tmp { callback });
-    println!("tmp as ptr: {:p}", tmp); // >> here <<
-
-    Box::into_raw(tmp)
-}
-
-#[no_mangle]
-pub extern "C" fn use_callback(tmp_ptr: *mut Tmp) {
-    unsafe {
-        ((*tmp_ptr).callback)(1);
-        ((*tmp_ptr).callback)(3);
-    }
+#[link(name = "http")]
+extern {
+    pub fn register_callback(target: *mut RustObject, cb: extern fn(*mut RustObject, i32)) -> i32;
 }
 
 //Test
 extern "C" {
     pub fn make_test() -> *mut Test;
-    pub fn get_test(t: *mut Test, path: *const libc::c_int, cb: extern fn(*const libc::c_int));
+    pub fn test_get(t: *mut Test, path: *const libc::c_int, cb: Box<extern fn(i32, RT)>);
 }
 
 extern "C" {
-  // Declare the prototype for the external function
-  //pub fn do_thing(cb: extern fn (*const libc::c_int));
+    // Declare the prototype for the external function
+    //pub fn do_thing(cb: extern fn (*const libc::c_int));
 
-  // Declare the prototype for the external function
+    // Declare the prototype for the external function
     pub fn do_thing(cb: extern fn (*mut c_void, c_int, c_int) -> c_int, user_data: *mut c_void);
 
 }

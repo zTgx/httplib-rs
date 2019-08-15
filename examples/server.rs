@@ -1,15 +1,21 @@
 extern crate httplib;
 use httplib::*;
 
-unsafe extern "C" fn callback(_req: *mut ffi::Request, _rep: *mut ffi::Response) {
+#[no_mangle]
+extern "C" fn callback(_req: *const ffi::Request, _rep: *mut ffi::Response) {
     //callback
-    println!("...");
+    println!("IIIIIIIIIIII am back from cpphttplib...");
+}
+
+#[no_mangle]
+extern "C" fn t(x: i32) {
+    println!("callback T: {:?}", x);
 }
 
 fn main() {
-    let mut server = Server::new();
+    let mut server = Box::new( Server::new() );
+    //server.get_t(t);
+    server.get("/".to_string(), callback);
 
-    server.get("/".to_string(), Box::new( callback) );
-
-    let _lis = server.listen("localhost".to_string(), 9001, 0);
+    let _lis = server.listen(&"localhost".to_string(), 9001, 0);
 }
