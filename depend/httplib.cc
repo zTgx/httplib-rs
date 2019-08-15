@@ -29,7 +29,7 @@ extern "C" {
         return s->is_valid();
     }
 
-    Server& get(Server* s, const char *pattern, Server::Handler handler) {
+    Server& getx(Server* s, const char *pattern, Server::Handler handler) {
         std::cout << "pattern: " << pattern << std::endl;
         // std::cout << "handler: " << handler;
         return s->Get(pattern, handler);

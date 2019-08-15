@@ -16,8 +16,8 @@ struct Tmp {
     void (*callback)(int32_t);
 };
 
-typedef Tmp*(__stdcall* set_callback_t)(void(*callback_t)(int32_t));
-typedef void(__stdcall* use_callback_t)(Tmp*);
+typedef Tmp*(set_callback_t)(void(*callback_t)(int32_t));
+typedef void(use_callback_t)(Tmp*);
 
 void callback(int32_t i) {
     printf("%d\n", i * 2);

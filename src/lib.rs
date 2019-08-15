@@ -149,20 +149,22 @@ impl Test {
     // }
 }
 
+
 // Exposed function to the user of the bindings
 pub fn do_thing<F>(f: F) where F: Fn(i32, i32) -> i32 {
-    // Shim interface function
-    pub extern fn do_thing_wrapper<F>(closure: *mut c_void, a: c_int, b: c_int) -> c_int
-    where F: Fn(i32, i32) -> i32 {
-      let opt_closure = closure as *mut Option<F>;
-      unsafe {
-        let res = (*opt_closure).take().unwrap()(a as i32, b as i32);
-        return res as c_int;
-      }
-    }
-
     let user_data = &f as *const _ as *mut c_void;
     unsafe {
-        ffi::do_thing( do_thing_wrapper::<F>, user_data );
+        ffi::do_thing(do_thing_wrapper::<F>, user_data);
     }
+
+    // Shim interface function
+    extern fn do_thing_wrapper<F>(closure: *mut c_void, a: c_int, b: c_int) -> c_int
+        where F: Fn(i32, i32) -> i32 {
+            let opt_closure = closure as *mut Option<F>;
+            unsafe {
+                let res = (*opt_closure).take().unwrap()(a as i32, b as i32);
+                return res as c_int;
+            }
+        }
 }
+

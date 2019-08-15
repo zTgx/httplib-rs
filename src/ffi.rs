@@ -180,6 +180,9 @@ extern "C" {
 
 extern "C" {
   // Declare the prototype for the external function
-  pub fn do_thing(cb: extern fn (*mut c_void, c_int, c_int) -> c_int,
-              user_data: *mut c_void);
+  //pub fn do_thing(cb: extern fn (*const libc::c_int));
+
+  // Declare the prototype for the external function
+    pub fn do_thing(cb: extern fn (*mut c_void, c_int, c_int) -> c_int, user_data: *mut c_void);
+
 }
