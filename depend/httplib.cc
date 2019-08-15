@@ -63,14 +63,14 @@ extern "C" {
     }
 
     Client* make_client_with_host_port_timeout(const char* host, int port, time_t timeout_sec) {
-        std::cout << "host: " << host << std::endl;
+        std::cout << "connect host: " << host << std::endl;
         Client *c = new Client(host, port, timeout_sec);
         return c;
     }
 
     const char* get_with_path(Client* client, const char* path) {
         std::cout << "get with path: " << path << std::endl;
-        std::shared_ptr<Response> res = client->Get(path);
+        std::shared_ptr<Response> res = client->Get("/");
         std::cout << "body : " << res->body << std::endl;
 
         return res->body.c_str();
