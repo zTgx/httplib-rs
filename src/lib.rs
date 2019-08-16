@@ -47,6 +47,11 @@ impl Server {
 
     pub fn listen(&mut self, host: &String, port: i32, socket_flags: i32) -> bool {
         unsafe {
+            let mut host = String::from(host.as_str());
+            host.push_str("\0");
+            let c_str = CStr::from_bytes_with_nul(host.as_bytes()).expect("CStr::from_bytes_with_nul failed");
+
+            //listen_with(self.s, &c_str, port, socket_flags)
             listen_with(self.s, host.as_ptr() as *const i8, port as libc::c_int, socket_flags)
         }
     }
@@ -55,7 +60,7 @@ impl Server {
     where F:
         Fn(*const ffi::Request, *mut ffi::Response) {
         unsafe {
-            ffi::getx(self.s, path.as_ptr() as *const i8,  Server::do_thing_wrapper::<F>);
+            //ffi::getx(self.s, path.as_ptr() as *const i8,  Server::do_thing_wrapper::<F>);
         }
      }
 
@@ -63,6 +68,17 @@ impl Server {
     where F:
         Fn(*const ffi::Request, *mut ffi::Response) {
     }
+
+    pub fn get_raw(&mut self, path: String, cb: extern fn(req: *const ffi::Request, res: *mut ffi::Response)) {
+        unsafe {
+            let mut path= String::from(path.as_str());
+            path.push_str("\0");
+            let c_str = CStr::from_bytes_with_nul(path.as_bytes()).expect("CStr::from_bytes_with_nul failed");
+
+            //ffi::getx(self.s, &c_str,  cb);
+            ffi::getx(self.s, path.as_ptr() as *const i8, cb);
+        }
+    } 
 }
 
 //Client

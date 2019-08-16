@@ -1,5 +1,6 @@
 use libc::c_void;
 use libc::c_int;
+use std::ffi::CStr;
 
 use crate::traits::{
     ContentProviderResourceReleaser, Handler,
@@ -99,7 +100,9 @@ extern "C" {
     pub fn make_server() -> *mut Server;
 
     //method
+    //pub fn listen_with(s: *mut Server, host: &CStr, port: libc::c_int, socket_flags: libc::c_int) -> bool;
     pub fn listen_with(s: *mut Server, host: *const libc::c_char, port: libc::c_int, socket_flags: libc::c_int) -> bool;
+    //pub fn getx(s: *mut Server, reg: &CStr, cb: extern fn(*const Request, *mut Response) );
     pub fn getx(s: *mut Server, reg: *const libc::c_char, cb: extern fn(*const Request, *mut Response) );
 
     pub fn ttt(s: *mut Server, cb: extern fn(x: i32));

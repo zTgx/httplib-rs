@@ -23,7 +23,7 @@ extern "C" {
 
     bool listen_with(Server* s, const char *host, int port, int socket_flags) {
         std::cout << "host: " << host << "   " << "port : " << port << std::endl;
-        bool r = s->listen("localhost", port, socket_flags);
+        bool r = s->listen(host, port, socket_flags);
         std::cout << "listen : " << r << std::endl;
 
         return r;
