@@ -1,9 +1,8 @@
 use libc::c_void;
 use libc::c_int;
-use std::ffi::CStr;
 
 use crate::traits::{
-    ContentProviderResourceReleaser, Handler,
+    ContentProviderResourceReleaser,
 };
 
 ///Headers
@@ -78,6 +77,13 @@ pub struct Response {
     pub content_provider_resource_releaser: ContentProviderResourceReleaser,
 }
 
+//Response
+#[link(name = "http")]
+extern "C" {
+    pub fn r_set_redirect(r: *mut Response, url: *const libc::c_char);
+    pub fn r_set_content(r: *mut Response, s: *const libc::c_char, t: *const libc::c_char);
+    pub fn r_set_content_n(r: *mut Response, s: *const libc::c_char, n: libc::c_int, t: *const libc::c_char);
+}
 
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,8 +110,6 @@ extern "C" {
     pub fn listen_with(s: *mut Server, host: *const libc::c_char, port: libc::c_int, socket_flags: libc::c_int) -> bool;
     //pub fn getx(s: *mut Server, reg: &CStr, cb: extern fn(*const Request, *mut Response) );
     pub fn getx(s: *mut Server, reg: *const libc::c_char, cb: extern fn(*const Request, *mut Response) );
-
-    pub fn ttt(s: *mut Server, cb: extern fn(x: i32));
 
     pub fn register_server_callback(s: *mut Server, cb: extern fn(x: i32));
 }
@@ -136,7 +140,7 @@ extern "C" {
     pub fn make_client_with_host_port_timeout(host: *const libc::c_char, port: libc::c_int, time_t: libc::time_t) -> *mut Client;
 
     //method
-    pub fn get_with_path(c: *mut Client, path: *const libc::c_char) -> *const libc::c_char;
+    pub fn get_with_path(c: *mut Client, path: *const libc::c_char, n: libc::c_int) -> *mut Response;
 }
 
 

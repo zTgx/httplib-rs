@@ -21,7 +21,7 @@ public:
 
     typedef std::function<void(const int, Response)> Handler;
     void get_test(int path, Handler h) {
-        std::cout << ".....ente..." << std::endl;
+        std::cout << ".....ente...: " << path << std::endl;
 
         //x = 22;
         Response r(34);
@@ -33,4 +33,3 @@ public:
     }
 
 };
-

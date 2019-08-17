@@ -8,17 +8,17 @@ pub mod traits;
 
 //Test
 pub use crate::ffi::{
-    make_test, test_get, register_callback,
+    make_test, test_get, register_callback, r_set_content, r_set_redirect,
 };
 
 //Client
 use crate::ffi::{
-    make_client_with_host, make_client_with_host_port, make_client_with_host_port_timeout, get_with_path
+    make_client_with_host, make_client_with_host_port, make_client_with_host_port_timeout,
 };
 
 //Server
 use crate::ffi::{
-    make_server, listen_with, getx, register_server_callback,
+    make_server, listen_with,
 };
 pub use traits::{Handler};
 
@@ -30,6 +30,23 @@ pub struct Response {
     pub res: *mut ffi::Response,
 }
 
+pub fn set_redirect(r: *mut ffi::Response, url: String) {
+    unsafe {
+        ffi::r_set_redirect(r, url.as_ptr() as *const i8);
+    }
+}
+
+pub fn set_content(r: *mut ffi::Response, s: String, t: String) {
+    unsafe {
+        ffi::r_set_content(r, s.as_ptr() as *const i8, t.as_ptr() as *const i8);
+    }
+}
+
+pub fn set_content_n(r: *mut ffi::Response, s: String, n: isize, t: String) {
+    unsafe {
+        ffi::r_set_content_n(r, s.as_ptr() as *const i8, n as libc::c_int, t.as_ptr() as *const i8);
+    }
+}
 
 //Server
 pub struct Server {
@@ -60,7 +77,7 @@ impl Server {
     where F:
         Fn(*const ffi::Request, *mut ffi::Response) {
         unsafe {
-            //ffi::getx(self.s, path.as_ptr() as *const i8,  Server::do_thing_wrapper::<F>);
+            ffi::getx(self.s, path.as_ptr() as *const i8,  Server::do_thing_wrapper::<F>);
         }
      }
 
@@ -78,7 +95,7 @@ impl Server {
             //ffi::getx(self.s, &c_str,  cb);
             ffi::getx(self.s, path.as_ptr() as *const i8, cb);
         }
-    } 
+    }
 }
 
 //Client
@@ -111,12 +128,14 @@ impl Client {
         }
     }
 
-    pub fn get_with_path(&mut self, path: &String) -> &str {
-        let c_chars = unsafe{
-            get_with_path( self.c, path.as_ptr() as *const i8)
+    pub fn get_with_path(&mut self, path: &String) -> *mut ffi::Response {
+        let n = path.len();
+        let r = unsafe {
+            ffi::get_with_path( self.c, path.as_ptr() as *const libc::c_char, n as i32)
         };
 
-        unsafe { CStr::from_ptr( c_chars ).to_str().unwrap() }
+        return r;
+        // unsafe { CStr::from_ptr( c_chars ).to_str().unwrap() }
     }
 }
 
