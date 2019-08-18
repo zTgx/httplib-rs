@@ -85,6 +85,10 @@ extern "C" {
         memcpy (dst ,pattern, len);
         printf("pattern : %s\n", dst);
         std::shared_ptr<Response> res = client->Get(dst);
+
+        printf("status: %d\n", res->status);
+        printf("body : %s\n", res->body.c_str());
+
         return res.get();
     }
 }

@@ -23,7 +23,7 @@ fn hi_callback(req: *const ffi::Request, rep: *mut ffi::Response) {
 
 fn main() {
     let mut server = Box::new( Server::new() );
-    server.get("/".to_string(), callback);
+    // server.get("/".to_string(), callback);
     server.get("/hi".to_string(), hi_callback);
 
     let _lis = server.listen(&"localhost".to_string(), 9001, 0);
